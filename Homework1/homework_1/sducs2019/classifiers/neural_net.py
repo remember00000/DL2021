@@ -116,7 +116,9 @@ class ThreeLayerNet(object):
         shift_scores_exp_sum=np.sum(shift_scores_exp,1)
         loss_mat=-shift_scores[np.arange(N),y]+np.log(shift_scores_exp_sum)
         loss=np.sum(loss_mat)
-        loss=loss/N+reg*(np.sum(W1*W1)+np.sum(W2*W2)+np.sum(W3*W3))*0.5
+        loss/=N
+        loss+=0.5*reg*(np.sum(W1*W1)+np.sum(W2*W2)+np.sum(W3*W3))
+        # loss=loss/N+reg*(np.sum(W1*W1)+np.sum(W2*W2)+np.sum(W3*W3))*0.5
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
@@ -194,7 +196,7 @@ class ThreeLayerNet(object):
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-            mask=np.random.choice(num_train,batch_size)
+            mask=np.random.choice(num_train,batch_size,replace=num_train < batch_size)
             X_batch=X[mask]
             y_batch=y[mask]
 
