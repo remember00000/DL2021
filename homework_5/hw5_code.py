@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.core.fromnumeric import argmax
 
 data = open('shakespeare_train.txt', 'r').read() # should be simple plain text file
 
@@ -11,7 +12,7 @@ bh = a["bh"] # 250 x 1
 by = a["by"] # 62 x 1
 
 chars, data_size, vocab_size, char_to_ix, ix_to_char = a["chars"].tolist(), a["data_size"].tolist(), a["vocab_size"].tolist(), a["char_to_ix"].tolist(), a["ix_to_char"].tolist()
-
+print(char_to_ix)
 # hyperparameters
 hidden_size = 250
 seq_length = 1000 # number of steps to unroll the RNN for
@@ -44,15 +45,20 @@ def sample(h, seed_ix, n, alpha):
   ixes=[]
   for t in range(n):
     h=np.tanh(np.dot(Wxh,x)+np.dot(Whh,h)+bh)#hidden layer
+    # temp=np.argmax(h)
+    # print(temp,'--',h[temp])
     y=np.dot(Why,h)+by#output
     p=np.exp(alpha*y)/np.sum(np.exp(alpha*y))#softmax
+    # print(p)
     ix=np.random.choice(range(vocab_size),p=p.ravel())#按照概率输出一个值
     x=np.zeros((vocab_size,1))
     x[ix]=1#作为下一层的输入x
     ixes.append(ix)
   return ixes 
   # End your code
-  
+#test Wxh
+# h_ = np.zeros((hidden_size,1))
+# sample(h_,9,1,1)
   
 # Part 2: Complete a String
 def comp(m, n):
@@ -123,8 +129,8 @@ def comp(m, n):
   print('Continuation: \n----\n%s \n----' % (txt,))
 
 if __name__ == '__main__':
-    ### Test case
-    ## Part 1
+    ## Test case
+    # Part 1
     temp(length=200, alpha=5)
     temp(length=200, alpha=1)
     temp(length=200, alpha=0.1)
@@ -135,6 +141,3 @@ if __name__ == '__main__':
     comp(2,500)
     comp(300,300)
     comp(100,500)
-    print(Why)
-    print(Whh)
-
